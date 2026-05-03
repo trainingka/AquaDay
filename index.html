@@ -496,8 +496,8 @@
         /* Nemo Fish */
         #nemo {
             position: fixed;
-            width: 80px;
-            height: 50px;
+            width: 120px;
+            height: 75px;
             cursor: pointer;
             z-index: 9999;
             transition: transform 0.1s ease;
@@ -725,8 +725,8 @@
         const nemo = document.getElementById('nemo');
         const bubble = document.getElementById('nemoBubble');
 
-        let posX = Math.random() * (window.innerWidth - 80);
-        let posY = Math.random() * (window.innerHeight - 50);
+        let posX = Math.random() * (window.innerWidth - 120);
+        let posY = Math.random() * (window.innerHeight - 75);
         let velX = (Math.random() - 0.5) * 4;
         let velY = (Math.random() - 0.5) * 3;
         let angle = 0;
@@ -776,8 +776,8 @@
         });
 
         function updateNemo() {
-            const dx = mouseX - (posX + 40);
-            const dy = mouseY - (posY + 25);
+            const dx = mouseX - (posX + 60);
+            const dy = mouseY - (posY + 37.5);
             const distToMouse = Math.sqrt(dx * dx + dy * dy);
 
             // If mouse is close, swim away in fear!
@@ -785,7 +785,7 @@
                 if (!isScared) {
                     isScared = true;
                     bubble.textContent = scaredMessages[Math.floor(Math.random() * scaredMessages.length)];
-                    bubble.style.left = (posX + 40) + 'px';
+                    bubble.style.left = (posX + 60) + 'px';
                     bubble.style.top = (posY - 50) + 'px';
                     bubble.classList.add('show');
                     setTimeout(() => bubble.classList.remove('show'), 2000);
@@ -806,8 +806,8 @@
                 
                 // Random target changes
                 if (!isMoving || Math.random() < 0.01) {
-                    targetX = Math.random() * (window.innerWidth - 80);
-                    targetY = Math.random() * (window.innerHeight - 50);
+                    targetX = Math.random() * (window.innerWidth - 120);
+                    targetY = Math.random() * (window.innerHeight - 75);
                     isMoving = true;
                 }
 
@@ -834,14 +834,14 @@
             posY += velY;
 
             // Bounce off walls
-            if (posX <= 0 || posX >= window.innerWidth - 80) {
+            if (posX <= 0 || posX >= window.innerWidth - 120) {
                 velX *= -1;
-                posX = Math.max(0, Math.min(posX, window.innerWidth - 80));
+                posX = Math.max(0, Math.min(posX, window.innerWidth - 120));
                 if (Math.random() < 0.5) showRandomMessage();
             }
-            if (posY <= 0 || posY >= window.innerHeight - 50) {
+            if (posY <= 0 || posY >= window.innerHeight - 75) {
                 velY *= -1;
-                posY = Math.max(0, Math.min(posY, window.innerHeight - 50));
+                posY = Math.max(0, Math.min(posY, window.innerHeight - 75));
                 if (Math.random() < 0.5) showRandomMessage();
             }
 
@@ -859,7 +859,7 @@
         function showRandomMessage() {
             const msg = funnyMessages[Math.floor(Math.random() * funnyMessages.length)];
             bubble.textContent = msg;
-            bubble.style.left = (posX + 40) + 'px';
+            bubble.style.left = (posX + 60) + 'px';
             bubble.style.top = (posY - 50) + 'px';
             bubble.classList.add('show');
             
@@ -872,7 +872,7 @@
         nemo.addEventListener('click', function(e) {
             e.stopPropagation();
             bubble.textContent = "Ouch! You caught me! 😭";
-            bubble.style.left = (posX + 40) + 'px';
+            bubble.style.left = (posX + 60) + 'px';
             bubble.style.top = (posY - 50) + 'px';
             bubble.classList.add('show');
             
