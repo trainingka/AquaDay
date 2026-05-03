@@ -733,6 +733,9 @@
         let targetX = posX;
         let targetY = posY;
         let isMoving = false;
+        let mouseX = -1000;
+        let mouseY = -1000;
+        let isScared = false;
 
         const funnyMessages = [
             "Hi there! 🐠",
@@ -752,20 +755,69 @@
             "Just keep swimming... 🎵"
         ];
 
-        function updateNemo() {
-            // Random target changes
-            if (!isMoving || Math.random() < 0.01) {
-                targetX = Math.random() * (window.innerWidth - 80);
-                targetY = Math.random() * (window.innerHeight - 50);
-                isMoving = true;
-            }
+        const scaredMessages = [
+            "Eek! Too close! 😱",
+            "Gotta swim away! 🏊",
+            "You can't catch me!",
+            "I'm too fast for you!",
+            "No touching! 🚫",
+            "Back off, human! 😤"
+        ];
 
-            // Physics: move toward target with some randomness
-            const dx = targetX - posX;
-            const dy = targetY - posY;
-            
-            velX += dx * 0.002 + (Math.random() - 0.5) * 0.3;
-            velY += dy * 0.002 + (Math.random() - 0.5) * 0.3;
+        // Track mouse position
+        document.addEventListener('mousemove', function(e) {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        document.addEventListener('mouseleave', function() {
+            mouseX = -1000;
+            mouseY = -1000;
+        });
+
+        function updateNemo() {
+            const dx = mouseX - (posX + 40);
+            const dy = mouseY - (posY + 25);
+            const distToMouse = Math.sqrt(dx * dx + dy * dy);
+
+            // If mouse is close, swim away in fear!
+            if (distToMouse < 150 && distToMouse > 0) {
+                if (!isScared) {
+                    isScared = true;
+                    bubble.textContent = scaredMessages[Math.floor(Math.random() * scaredMessages.length)];
+                    bubble.style.left = (posX + 40) + 'px';
+                    bubble.style.top = (posY - 50) + 'px';
+                    bubble.classList.add('show');
+                    setTimeout(() => bubble.classList.remove('show'), 2000);
+                }
+                
+                // Swim away from mouse
+                const escapeX = posX + (posX - mouseX) * 0.05;
+                const escapeY = posY + (posY - mouseY) * 0.05;
+                
+                velX += (escapeX - posX) * 0.01;
+                velY += (escapeY - posY) * 0.01;
+                
+                // Boost speed when scared
+                velX *= 1.05;
+                velY *= 1.05;
+            } else {
+                isScared = false;
+                
+                // Random target changes
+                if (!isMoving || Math.random() < 0.01) {
+                    targetX = Math.random() * (window.innerWidth - 80);
+                    targetY = Math.random() * (window.innerHeight - 50);
+                    isMoving = true;
+                }
+
+                // Normal swimming toward target
+                const tdx = targetX - posX;
+                const tdy = targetY - posY;
+                
+                velX += tdx * 0.002 + (Math.random() - 0.5) * 0.3;
+                velY += tdy * 0.002 + (Math.random() - 0.5) * 0.3;
+            }
 
             // Damping
             velX *= 0.98;
@@ -773,9 +825,9 @@
 
             // Speed limit
             const speed = Math.sqrt(velX * velX + velY * velY);
-            if (speed > 5) {
-                velX = (velX / speed) * 5;
-                velY = (velY / speed) * 5;
+            if (speed > 8) {
+                velX = (velX / speed) * 8;
+                velY = (velY / speed) * 8;
             }
 
             posX += velX;
@@ -785,12 +837,12 @@
             if (posX <= 0 || posX >= window.innerWidth - 80) {
                 velX *= -1;
                 posX = Math.max(0, Math.min(posX, window.innerWidth - 80));
-                showRandomMessage();
+                if (Math.random() < 0.5) showRandomMessage();
             }
             if (posY <= 0 || posY >= window.innerHeight - 50) {
                 velY *= -1;
                 posY = Math.max(0, Math.min(posY, window.innerHeight - 50));
-                showRandomMessage();
+                if (Math.random() < 0.5) showRandomMessage();
             }
 
             // Flip fish based on direction
@@ -819,17 +871,18 @@
         // Click interaction
         nemo.addEventListener('click', function(e) {
             e.stopPropagation();
-            showRandomMessage();
+            bubble.textContent = "Ouch! You caught me! 😭";
+            bubble.style.left = (posX + 40) + 'px';
+            bubble.style.top = (posY - 50) + 'px';
+            bubble.classList.add('show');
             
-            // Scatter away
-            velX = (Math.random() - 0.5) * 10;
-            velY = (Math.random() - 0.5) * 10;
-        });
-
-        // Hover interaction
-        nemo.addEventListener('mouseenter', function() {
-            velX *= 2;
-            velY *= 2;
+            setTimeout(() => {
+                bubble.classList.remove('show');
+            }, 2500);
+            
+            // Scatter away fast
+            velX = (Math.random() - 0.5) * 15;
+            velY = (Math.random() - 0.5) * 15;
         });
 
         // Start animation
