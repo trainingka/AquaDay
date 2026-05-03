@@ -65,6 +65,29 @@
             color: var(--white);
             font-weight: 700;
             font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(180deg, var(--cyan) 0%, rgba(0, 204, 255, 0.3) 100%);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo-icon::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 40%;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
         }
 
         .nav-links {
@@ -81,6 +104,24 @@
 
         .nav-links a:hover {
             color: var(--cyan);
+        }
+
+        .nav-rsvp-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--white);
+            padding: 8px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: background 0.3s ease;
+        }
+
+        .nav-rsvp-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            color: var(--white);
         }
 
         /* Hero Section */
@@ -100,7 +141,34 @@
             font-size: 4.5rem;
             font-weight: 700;
             letter-spacing: 2px;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
+        }
+
+        .hero-invited {
+            color: var(--white);
+            font-size: 1.2rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+        }
+
+        .hero-divider {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 15px 0 20px;
+        }
+
+        .hero-divider-line {
+            flex: 1;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.5);
+            max-width: 100px;
+        }
+
+        .hero-divider-icon {
+            color: var(--white);
+            font-size: 1.2rem;
         }
 
         .hero-subtitle {
@@ -131,14 +199,16 @@
         }
 
         .cta-button {
-            background: var(--cyan);
-            color: var(--navy);
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--white);
             padding: 15px 40px;
-            border-radius: 50px;
+            border-radius: 15px;
             text-decoration: none;
             font-weight: 700;
             font-size: 1.1rem;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         .cta-button:hover {
@@ -428,35 +498,45 @@
     <!-- Navigation -->
     <nav id="navbar">
         <div class="container">
-            <div class="logo">Aqua Day 2026</div>
+            <div class="logo">
+                <div class="logo-icon"></div>
+                Aqua Day 2026
+            </div>
             <div class="nav-links">
                 <a href="#home">Home</a>
                 <a href="#details">Details</a>
                 <a href="#countdown">Countdown</a>
                 <a href="#rsvp">RSVP</a>
+                <a href="#rsvp" class="nav-rsvp-btn">RSVP Now</a>
             </div>
         </div>
     </nav>
 
     <!-- Hero Section -->
     <section id="home">
+        <p class="hero-invited">You're Invited!</p>
         <h1 class="hero-title">AQUA DAY 2026</h1>
-        <p class="hero-subtitle">Join us for the ultimate summer pool party experience!</p>
+        <div class="hero-divider">
+            <div class="hero-divider-line"></div>
+            <i class="fas fa-chevron-down hero-divider-icon"></i>
+            <div class="hero-divider-line"></div>
+        </div>
+        <p class="hero-subtitle">A day of sun, splash, and smiles!</p>
         <div class="event-details">
             <div class="detail-item">
                 <i class="fas fa-calendar"></i>
-                <span>July 15, 2026</span>
+                <span>Saturday, 20 June 2026</span>
             </div>
             <div class="detail-item">
                 <i class="fas fa-clock"></i>
-                <span>10:00 AM - 6:00 PM</span>
+                <span>10:00 AM – 5:00 PM</span>
             </div>
             <div class="detail-item">
                 <i class="fas fa-map-marker-alt"></i>
-                <span>Sunny Beach Resort, Miami, FL</span>
+                <span>Bluewave Resort, Port Dickson</span>
             </div>
         </div>
-        <a href="#rsvp" class="cta-button">RSVP Now</a>
+        <a href="#rsvp" class="cta-button">RSVP <i class="fas fa-chevron-down" style="margin-left: 8px; font-size: 0.9rem;"></i></a>
     </section>
 
     <!-- Features Grid -->
@@ -597,7 +677,7 @@
         });
 
         // Countdown Timer
-        const targetDate = new Date('July 15, 2026 10:00:00').getTime();
+        const targetDate = new Date('June 20, 2026 10:00:00').getTime();
 
         function updateCountdown() {
             const now = new Date().getTime();
