@@ -492,6 +492,56 @@
                 font-size: 0.9rem;
             }
         }
+
+        /* Nemo Fish */
+        #nemo {
+            position: fixed;
+            width: 80px;
+            height: 50px;
+            cursor: pointer;
+            z-index: 9999;
+            transition: transform 0.1s ease;
+            pointer-events: auto;
+        }
+
+        #nemo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .nemo-bubble {
+            position: fixed;
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid var(--cyan);
+            border-radius: 20px;
+            padding: 10px 15px;
+            font-size: 0.85rem;
+            color: var(--navy);
+            z-index: 10000;
+            max-width: 200px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .nemo-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 30px;
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 10px solid var(--cyan);
+        }
+
+        .nemo-bubble.show {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -665,7 +715,126 @@
         </div>
     </footer>
 
+    <div id="nemo">
+        <img src="image/fish.png" alt="Nemo">
+    </div>
+    <div class="nemo-bubble" id="nemoBubble"></div>
+
     <script>
+        // Nemo Physics & Interaction
+        const nemo = document.getElementById('nemo');
+        const bubble = document.getElementById('nemoBubble');
+
+        let posX = Math.random() * (window.innerWidth - 80);
+        let posY = Math.random() * (window.innerHeight - 50);
+        let velX = (Math.random() - 0.5) * 4;
+        let velY = (Math.random() - 0.5) * 3;
+        let angle = 0;
+        let targetX = posX;
+        let targetY = posY;
+        let isMoving = false;
+
+        const funnyMessages = [
+            "Hi there! 🐠",
+            "Don't forget sunscreen!",
+            "I'm Nemo, your guide!",
+            "Pool party time! 🎉",
+            "Catch me if you can!",
+            "Water you doing? 😄",
+            "This party is fin-tastic!",
+            "RSVP now, fish friend!",
+            "Splash zone ahead! 💦",
+            "I see you looking at me!",
+            "Let's make waves! 🌊",
+            "You're invited too!",
+            "Swimming is my cardio!",
+            "Bluewave Resort rocks!",
+            "Just keep swimming... 🎵"
+        ];
+
+        function updateNemo() {
+            // Random target changes
+            if (!isMoving || Math.random() < 0.01) {
+                targetX = Math.random() * (window.innerWidth - 80);
+                targetY = Math.random() * (window.innerHeight - 50);
+                isMoving = true;
+            }
+
+            // Physics: move toward target with some randomness
+            const dx = targetX - posX;
+            const dy = targetY - posY;
+            
+            velX += dx * 0.002 + (Math.random() - 0.5) * 0.3;
+            velY += dy * 0.002 + (Math.random() - 0.5) * 0.3;
+
+            // Damping
+            velX *= 0.98;
+            velY *= 0.98;
+
+            // Speed limit
+            const speed = Math.sqrt(velX * velX + velY * velY);
+            if (speed > 5) {
+                velX = (velX / speed) * 5;
+                velY = (velY / speed) * 5;
+            }
+
+            posX += velX;
+            posY += velY;
+
+            // Bounce off walls
+            if (posX <= 0 || posX >= window.innerWidth - 80) {
+                velX *= -1;
+                posX = Math.max(0, Math.min(posX, window.innerWidth - 80));
+                showRandomMessage();
+            }
+            if (posY <= 0 || posY >= window.innerHeight - 50) {
+                velY *= -1;
+                posY = Math.max(0, Math.min(posY, window.innerHeight - 50));
+                showRandomMessage();
+            }
+
+            // Flip fish based on direction
+            const flip = velX < 0 ? 1 : -1;
+            angle += (Math.atan2(velY, Math.abs(velX)) - angle) * 0.1;
+
+            nemo.style.left = posX + 'px';
+            nemo.style.top = posY + 'px';
+            nemo.style.transform = `scaleX(${flip}) rotate(${angle * 0.5}rad)`;
+
+            requestAnimationFrame(updateNemo);
+        }
+
+        function showRandomMessage() {
+            const msg = funnyMessages[Math.floor(Math.random() * funnyMessages.length)];
+            bubble.textContent = msg;
+            bubble.style.left = (posX + 40) + 'px';
+            bubble.style.top = (posY - 50) + 'px';
+            bubble.classList.add('show');
+            
+            setTimeout(() => {
+                bubble.classList.remove('show');
+            }, 2500);
+        }
+
+        // Click interaction
+        nemo.addEventListener('click', function(e) {
+            e.stopPropagation();
+            showRandomMessage();
+            
+            // Scatter away
+            velX = (Math.random() - 0.5) * 10;
+            velY = (Math.random() - 0.5) * 10;
+        });
+
+        // Hover interaction
+        nemo.addEventListener('mouseenter', function() {
+            velX *= 2;
+            velY *= 2;
+        });
+
+        // Start animation
+        updateNemo();
+
         // Navbar scroll effect
         window.addEventListener('scroll', function() {
             const navbar = document.getElementById('navbar');
